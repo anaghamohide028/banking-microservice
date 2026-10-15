@@ -1,0 +1,18 @@
+# IntelliJ
+.idea/
+*.iml
+
+# Maven build output
+target/
+
+# Environment and secrets
+.env
+.env.*
+*.log
+
+# Java
+*.class
+
+# OS files
+.DS_Store
+Thumbs.db
