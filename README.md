@@ -1,2 +1,2 @@
 # banking-microservice
-This is banking project for my personal Understanding.
+Real-world banking microservices using Java, Spring Boot, MySQL, Kafka, Docker and CI/CD
