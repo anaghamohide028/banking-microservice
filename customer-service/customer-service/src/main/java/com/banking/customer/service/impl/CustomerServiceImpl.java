@@ -4,12 +4,12 @@ import com.banking.customer.dto.request.CustomerRegistrationRequest;
 import com.banking.customer.dto.response.CustomerResponse;
 import com.banking.customer.entity.Customer;
 import com.banking.customer.enums.CustomerStatus;
+import com.banking.customer.exception.CustomerNotFoundException;
 import com.banking.customer.exception.DuplicateCustomerException;
 import com.banking.customer.repository.CustomerRepository;
 import com.banking.customer.service.CustomerService;
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Locale;
 import java.util.UUID;
@@ -63,5 +63,24 @@ public class CustomerServiceImpl implements CustomerService {
 
         return customerResponse;
 
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public CustomerResponse getCustomerByCustomerNumber(String customerNumber) {
+        Customer customer = customerRepository.findByCustomerNumber(customerNumber)
+                .orElseThrow(()->new CustomerNotFoundException(
+                        "customer is not found with given Customer Number" + customerNumber));
+
+        CustomerResponse response =new CustomerResponse();
+
+        response.setFirstName(customer.getFirstName());
+        response.setLastName(customer.getLastName());
+        response.setEmail(customer.getEmail());
+        response.setStatus(customer.getStatus());
+        response.setCustomerNumber(customer.getCustomerNumber());
+        response.setCreatedAt(customer.getCreatedAt());
+
+        return  response;
     }
 }
