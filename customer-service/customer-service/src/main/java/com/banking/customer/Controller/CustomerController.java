@@ -1,7 +1,9 @@
 package com.banking.customer.Controller;
 
 import com.banking.customer.dto.request.CustomerRegistrationRequest;
+import com.banking.customer.dto.request.CustomerUpdateRequest;
 import com.banking.customer.dto.response.CustomerResponse;
+import com.banking.customer.entity.Customer;
 import com.banking.customer.service.CustomerService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -34,6 +36,15 @@ public class CustomerController {
         CustomerResponse response = customerService.getCustomerByCustomerNumber(customerNumber);
 
         return  ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
+    }
+
+    @PutMapping("/{customerNumber}/profile")
+    public ResponseEntity<CustomerResponse> updateCustomerByCustomerNumber(@PathVariable String customerNumber, @RequestBody @Valid CustomerUpdateRequest request){
+        CustomerResponse response =customerService.updateCustomer(customerNumber,request);
+
+        return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(response);
     }

@@ -1,11 +1,13 @@
 package com.banking.customer.service.impl;
 
 import com.banking.customer.dto.request.CustomerRegistrationRequest;
+import com.banking.customer.dto.request.CustomerUpdateRequest;
 import com.banking.customer.dto.response.CustomerResponse;
 import com.banking.customer.entity.Customer;
 import com.banking.customer.enums.CustomerStatus;
 import com.banking.customer.exception.CustomerNotFoundException;
 import com.banking.customer.exception.DuplicateCustomerException;
+import com.banking.customer.mapper.CustomerMapper;
 import com.banking.customer.repository.CustomerRepository;
 import com.banking.customer.service.CustomerService;
 import org.springframework.stereotype.Service;
@@ -20,8 +22,12 @@ public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
 
-    public CustomerServiceImpl(CustomerRepository customerRepository){
+    private final CustomerMapper customerMapper;
+
+    public CustomerServiceImpl(CustomerRepository customerRepository, CustomerMapper customerMapper){
+
         this.customerRepository=customerRepository;
+        this.customerMapper=customerMapper;
     }
 
     @Override
@@ -50,18 +56,7 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setCustomerNumber(customerNumber);
 
         Customer savedCustomer = customerRepository.save(customer);
-
-        CustomerResponse customerResponse =new CustomerResponse();
-
-        customerResponse.setFirstName(savedCustomer.getFirstName());
-        customerResponse.setLastName(savedCustomer.getLastName());
-        customerResponse.setEmail(savedCustomer.getEmail());
-        customerResponse.setCustomerNumber(savedCustomer.getCustomerNumber());
-        customerResponse.setStatus(savedCustomer.getStatus());
-        customerResponse.setCreatedAt(savedCustomer.getCreatedAt());
-
-
-        return customerResponse;
+        return customerMapper.toResponse(savedCustomer);
 
     }
 
@@ -70,17 +65,27 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerResponse getCustomerByCustomerNumber(String customerNumber) {
         Customer customer = customerRepository.findByCustomerNumber(customerNumber)
                 .orElseThrow(()->new CustomerNotFoundException(
-                        "customer is not found with given Customer Number" + customerNumber));
+                        "customer  not found with  Customer Number" +  customerNumber));
 
-        CustomerResponse response =new CustomerResponse();
+        return customerMapper.toResponse(customer);
+    }
 
-        response.setFirstName(customer.getFirstName());
-        response.setLastName(customer.getLastName());
-        response.setEmail(customer.getEmail());
-        response.setStatus(customer.getStatus());
-        response.setCustomerNumber(customer.getCustomerNumber());
-        response.setCreatedAt(customer.getCreatedAt());
+    @Override
+    @Transactional
+    public CustomerResponse updateCustomer(String customerNumber, CustomerUpdateRequest request) {
 
-        return  response;
+        Customer customer =customerRepository.findByCustomerNumber(customerNumber)
+                .orElseThrow(()->new CustomerNotFoundException("Customer is already is registered with customer Number"));
+
+         customer.setFirstName(request.getFirstName());
+         customer.setLastName(request.getLastName());
+         customer.setPhoneNumber(request.getPhoneNumber());
+
+         Customer updatedCustomer = customerRepository.save(customer);
+
+         return customerMapper.toResponse(updatedCustomer);
+
     }
 }
+
+
