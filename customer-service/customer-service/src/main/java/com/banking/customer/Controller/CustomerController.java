@@ -1,6 +1,7 @@
 package com.banking.customer.Controller;
 
 import com.banking.customer.dto.request.CustomerRegistrationRequest;
+import com.banking.customer.dto.request.CustomerStatusUpdateRequest;
 import com.banking.customer.dto.request.CustomerUpdateRequest;
 import com.banking.customer.dto.response.CustomerResponse;
 import com.banking.customer.entity.Customer;
@@ -51,6 +52,16 @@ public class CustomerController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(response);
+    }
+    @PatchMapping("/{customerNumber}/status")
+    public ResponseEntity<CustomerResponse> updateCustomerStatus(
+            @PathVariable String customerNumber,
+            @Valid @RequestBody CustomerStatusUpdateRequest request) {
+
+        CustomerResponse response =
+                customerService.updateCustomerStatus(customerNumber, request);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/getAllCustomer")

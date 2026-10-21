@@ -64,4 +64,17 @@ public class GlobalExceptionHandler {
                 .body(errorResponse);
 
     }
+
+    @ExceptionHandler(InvalidCustomerStatusTransitionException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidCustomerStatusTransitionException(InvalidCustomerStatusTransitionException ex){
+
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                ex.getMessage(),
+                Instant.now()
+        );
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(errorResponse);
+    }
 }
