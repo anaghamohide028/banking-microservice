@@ -10,6 +10,8 @@ import com.banking.customer.exception.DuplicateCustomerException;
 import com.banking.customer.mapper.CustomerMapper;
 import com.banking.customer.repository.CustomerRepository;
 import com.banking.customer.service.CustomerService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,6 +86,16 @@ public class CustomerServiceImpl implements CustomerService {
          Customer updatedCustomer = customerRepository.save(customer);
 
          return customerMapper.toResponse(updatedCustomer);
+
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<CustomerResponse> getAllCustomers(Pageable pageable) {
+
+        Page<Customer> customers = customerRepository.findAll(pageable);
+
+        return customers.map(customerMapper::toResponse);
 
     }
 }
