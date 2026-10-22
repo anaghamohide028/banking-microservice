@@ -30,5 +30,16 @@ pipeline {
                 }
             }
         }
+
+
+      stage('SonarQube Analysis') {
+             steps {
+                  dir('customer-service/customer-service') {
+                       withSonarQubeEnv('SonarQube') {
+                        sh 'mvn -B -ntp org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=banking-customer-service'
+            }
+        }
+    }
+}
     }
 }
