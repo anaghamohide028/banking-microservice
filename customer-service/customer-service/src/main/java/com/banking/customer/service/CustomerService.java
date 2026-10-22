@@ -18,4 +18,5 @@ public interface CustomerService {
     CustomerResponse updateCustomer(String customerNumber, CustomerUpdateRequest request);
     CustomerResponse updateCustomerStatus(String customerNumber,CustomerStatusUpdateRequest request);
     Page<CustomerResponse> getAllCustomers(Pageable pageable);
+    Page<CustomerResponse> getCustomersByStatus(CustomerStatus status, Pageable pageable);
 }

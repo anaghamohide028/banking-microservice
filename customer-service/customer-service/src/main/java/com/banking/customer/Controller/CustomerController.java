@@ -5,6 +5,7 @@ import com.banking.customer.dto.request.CustomerStatusUpdateRequest;
 import com.banking.customer.dto.request.CustomerUpdateRequest;
 import com.banking.customer.dto.response.CustomerResponse;
 import com.banking.customer.entity.Customer;
+import com.banking.customer.enums.CustomerStatus;
 import com.banking.customer.service.CustomerService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -76,5 +77,15 @@ public class CustomerController {
 
         return ResponseEntity.ok(response);
 
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<Page<CustomerResponse>> getCustomerByStatus(@RequestParam CustomerStatus status, @PageableDefault(
+            page =0, size =10,
+            sort ="createdAt",
+            direction = Sort.Direction.DESC) Pageable pageable)
+    {
+        Page<CustomerResponse> response = customerService.getCustomersByStatus(status, pageable);
+        return ResponseEntity.ok(response);
     }
 }

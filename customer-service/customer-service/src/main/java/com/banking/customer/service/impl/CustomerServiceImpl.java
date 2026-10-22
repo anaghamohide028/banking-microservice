@@ -102,6 +102,14 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Page<CustomerResponse> getCustomersByStatus(CustomerStatus status, Pageable pageable) {
+        Page<Customer> customers =customerRepository.findByStatus(status,pageable);
+
+        return customers.map(customerMapper::toResponse);
+    }
+
+    @Override
     @Transactional
     public CustomerResponse updateCustomerStatus(String customerNumber, CustomerStatusUpdateRequest request) {
 
