@@ -6,6 +6,7 @@ import com.banking.account.dto.AccountCreateRequest;
 import com.banking.account.dto.AccountResponse;
 import com.banking.account.entity.Account;
 import com.banking.account.enums.AccountStatus;
+import com.banking.account.exception.CustomerNotEligibleException;
 import com.banking.account.mapper.AccountMapper;
 import com.banking.account.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ public class AccountServiceImpl implements AccountService {
         CustomerDetailsResponse customer = customerClient.getCustomer(request.customerNumber());
 
         if (!"ACTIVE".equals(customer.status())) {
-            throw new IllegalStateException("Only ACTIVE customers can open bank accounts");
+            throw new CustomerNotEligibleException( "Customer is not eligible to open bank Account");
         }
 
         Account account = new Account();
